@@ -9,3 +9,11 @@ Organization site for the **Zolai AI** GitHub organization. Serving
 
 Component repos: `zolai-core` · `zolai-web` · `zolai-tauri` · `zolai-datasets` ·
 `zolai-training` · `zolai-wiki` · `.github`
+
+
+---
+
+## Org context
+
+Full project ecosystem, architecture, design, status & plans: **[Zolai AI Project Brain](https://github.com/Zolai-AI/.github/blob/main/docs/ZOLAI_AI_PROJECT_BRAIN.md)**.
+Part of the [Zolai-AI](https://github.com/Zolai-AI) org.
