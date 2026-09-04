@@ -7,36 +7,126 @@
 <meta name="description" content="A bilingual (Tedim Zolai ⇄ English) AI toolkit for the Zomi people. RAG-first knowledge brain, dictionary, curriculum, and offline desktop app — 100% ZVS 2018 compliant.">
 <link rel="icon" href="logo.png">
 <style>
-  :root{--ink:#062E24;--teal:#0E9F8A;--lt:#EAFBF6;--card:#ffffff;}
+  /* ---- Design tokens: cohesive Zolai brand theme ---- */
+  :root{
+    --ink:#062E24;          /* deep forest green */
+    --ink-2:#0A4233;
+    --teal:#0E9F8A;         /* primary brand teal */
+    --mint:#3EDDBF;         /* accent */
+    --aqua:#7AF0DB;
+    --paper:#EAFBF6;        /* light text */
+    --muted:#B9EBDD;
+    --card:rgba(255,255,255,.08);
+    --card-strong:rgba(255,255,255,.14);
+    --stroke:rgba(255,255,255,.28);
+    --radius-lg:28px;
+    --radius-pill:999px;
+    --shadow-soft:0 12px 30px rgba(0,0,0,.35);
+    --glow:0 0 0 1px rgba(62,221,191,.5), 0 10px 30px rgba(14,159,138,.45);
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --dur:.28s;
+  }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(160deg,var(--ink),var(--teal));color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center}
-  img.logo{width:140px;height:140px;border-radius:28px;margin-bottom:24px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
-  h1{font-size:2.2rem;letter-spacing:2px;margin-bottom:8px}
-  .tag{font-size:1.05rem;color:#C9F6EB;letter-spacing:3px;margin-bottom:26px;text-transform:uppercase}
-  p.lede{max-width:640px;font-size:1.05rem;line-height:1.6;color:#EAFBF6;margin-bottom:30px}
-  .links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:720px}
-  .links a{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#fff;text-decoration:none;padding:9px 16px;border-radius:999px;font-size:.92rem;transition:.2s}
-  .links a:hover{background:rgba(255,255,255,.24)}
-  footer{margin-top:38px;font-size:.82rem;color:#B9EBDD}
-  footer a{color:#C9F6EB}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:52px 20px;text-align:center;color:var(--paper);
+    background:radial-gradient(1200px 800px at 20% -10%, var(--ink-2), transparent 60%),
+               radial-gradient(1000px 700px at 110% 10%, rgba(14,159,138,.35), transparent 55%),
+               linear-gradient(160deg, var(--ink), var(--teal));
+    background-attachment:fixed;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* Ambient animated light blobs */
+  .blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.45;pointer-events:none;z-index:0;
+    animation:drift 18s ease-in-out infinite}
+  .blob.b1{width:340px;height:340px;background:var(--mint);top:-80px;left:-90px}
+  .blob.b2{width:300px;height:300px;background:var(--teal);bottom:-90px;right:-70px;animation-delay:-6s}
+  .blob.b3{width:260px;height:260px;background:rgba(122,240,219,.5);top:40%;left:60%;animation-delay:-12s}
+  @keyframes drift{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(60px,-40px) scale(1.12)}
+    66%{transform:translate(-40px,50px) scale(.94)}
+  }
+
+  main{position:relative;z-index:1;max-width:760px;display:flex;flex-direction:column;align-items:center}
+
+  /* ---- Logo: entrance + hover ---- */
+  .logo{margin-top:56px;width:150px;height:150px;border-radius:30px;box-shadow:var(--shadow-soft);
+    transition:transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), filter var(--dur) var(--ease);
+    /* entrance animation */
+    animation:logoIn .9s var(--ease) both}
+  @keyframes logoIn{
+    from{opacity:0;transform:translateY(-24px) scale(.9)}
+    to{opacity:1;transform:translateY(0) scale(1)}}
+  .logo:hover,.logo:focus-visible{transform:scale(1.08) rotate(-2deg);filter:drop-shadow(0 0 14px rgba(62,221,191,.55));box-shadow:var(--glow)}
+
+  /* ---- Headline: fade-up entrance with stagger ---- */
+  .reveal{opacity:0;transform:translateY(18px);animation:rise .8s var(--ease) forwards}
+  .reveal:nth-child(1){animation-delay:.12s}
+  .reveal:nth-child(2){animation-delay:.22s}
+  .reveal:nth-child(3){animation-delay:.32s}
+  .reveal:nth-child(4){animation-delay:.42s}
+  .reveal:nth-child(5){animation-delay:.52s}
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+
+  h1{margin-top:22px;font-size:clamp(1.9rem,5.2vw,2.6rem);letter-spacing:2px;font-weight:800;
+     background:linear-gradient(90deg,#fff,var(--aqua));-webkit-background-clip:text;background-clip:text;color:transparent;
+     background-size:200% auto;animation:shine 6s linear infinite}
+  @keyframes shine{to{background-position:200% center}}
+
+  .tag{font-size:clamp(.78rem,2vw,.98rem);color:var(--muted);letter-spacing:4px;text-transform:uppercase;margin-top:8px}
+  .lede{max-width:620px;font-size:clamp(1rem,2.4vw,1.12rem);line-height:1.65;color:var(--paper);margin-top:20px}
+
+  /* ---- Link pills: hover/active/focus ---- */
+  .links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px;max-width:720px}
+  .links a{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--stroke);color:#fff;
+    text-decoration:none;padding:10px 18px;border-radius:var(--radius-pill);font-size:.92rem;font-weight:600;
+    transition:transform var(--dur) var(--ease),background var(--dur),box-shadow var(--dur),border-color var(--dur)}
+  /* sheen sweep on hover */
+  .links a::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;transform:skewX(-20deg);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transition:left .6s var(--ease)}
+  .links a:hover{transform:translateY(-3px);background:var(--card-strong);border-color:rgba(62,221,191,.6);box-shadow:var(--glow)}
+  .links a:hover::after{left:140%}
+  .links a:active{transform:translateY(-1px) scale(.98)}
+  .links a:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+
+  footer{margin-top:44px;font-size:.82rem;color:var(--muted)}
+  footer a{color:var(--muted);transition:color var(--dur)}
+  footer a:hover{color:#fff}
+
+  /* ---- Accessibility: respect reduced motion + ensure contrast ---- */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important}
+    html{scroll-behavior:auto}
+  }
 </style>
 </head>
 <body>
-  <img class="logo" src="logo.png" alt="Zolai AI">
-  <h1>Zolai AI</h1>
-  <div class="tag">Tedim Zolai · ZVS 2018</div>
-  <p class="lede">A bilingual (Tedim Zolai ⇄ English) AI toolkit for the Zomi people.
-  We digitize, standardize, and preserve Zolai under the ZVS 2018 orthography — a
-  RAG-first knowledge brain, open learner platform, and offline desktop app.</p>
-  <nav class="links">
-    <a href="https://github.com/Zolai-AI/zolai-core">Core (RAG)</a>
-    <a href="https://github.com/Zolai-AI/zolai-web">Web</a>
-    <a href="https://github.com/Zolai-AI/zolai-tauri">Desktop</a>
-    <a href="https://github.com/Zolai-AI/zolai-datasets">Datasets</a>
-    <a href="https://github.com/Zolai-AI/zolai-training">Training</a>
-    <a href="https://github.com/Zolai-AI/zolai-wiki">Wiki</a>
-    <a href="https://github.com/Zolai-AI">GitHub Org</a>
-  </nav>
-  <footer>Part of the <a href="https://github.com/Zolai-AI">Zolai AI</a> GitHub organization · <a href="https://github.com/Zolai-AI/zolai-ai.github.io">Source</a></footer>
+  <div class="blob b1" aria-hidden="true"></div>
+  <div class="blob b2" aria-hidden="true"></div>
+  <div class="blob b3" aria-hidden="true"></div>
+
+  <main>
+    <img class="logo reveal" src="logo.png" alt="Zolai AI" width="150" height="150" tabindex="0">
+    <h1 class="reveal">Zolai AI</h1>
+    <div class="tag reveal">Tedim Zolai · ZVS 2018</div>
+    <p class="lede reveal">A bilingual (Tedim Zolai ⇄ English) AI toolkit for the Zomi people.
+      We digitize, standardize, and preserve Zolai under the ZVS 2018 orthography — a
+      RAG-first knowledge brain, open learner platform, and offline desktop app.</p>
+    <nav class="links reveal" aria-label="Zolai AI repositories">
+      <a href="https://github.com/Zolai-AI/zolai-core">Core (RAG)</a>
+      <a href="https://github.com/Zolai-AI/zolai-web">Web</a>
+      <a href="https://github.com/Zolai-AI/zolai-tauri">Desktop</a>
+      <a href="https://github.com/Zolai-AI/zolai-datasets">Datasets</a>
+      <a href="https://github.com/Zolai-AI/zolai-training">Training</a>
+      <a href="https://github.com/Zolai-AI/zolai-wiki">Wiki</a>
+      <a href="https://github.com/Zolai-AI">GitHub Org</a>
+    </nav>
+    <footer class="reveal">Part of the <a href="https://github.com/Zolai-AI">Zolai AI</a> GitHub organization · <a href="https://github.com/Zolai-AI/zolai-ai.github.io">Source</a></footer>
+  </main>
 </body>
 </html>
