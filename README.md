@@ -8,7 +8,7 @@ Organization site for the **Zolai AI** GitHub organization. Serving
 - Brand logo: `logo.png` (same as the website + org profile)
 
 Component repos: `zolai-core` · `zolai-web` · `zolai-tauri` · `zolai-datasets` ·
-`zolai-training` · `zolai-wiki` · `.github`
+`zolai-training` · `zolai-wiki` · `.github` · `zolai-mcp-server` · `zolai-landing` · `zolai-ai.github.io`
 
 
 ---
