@@ -11,3 +11,9 @@ Serves the bare root domain `https://zolai-ai.github.io/`.
 
 ## Role in the org
 Public-facing static site. Not a code repo; no tests, no API, no Python package.
+
+## UI Work
+
+For page/section/layout design, color systems, typography, responsive, and design QA,
+use the installed `web-design-master` skill at `~/.agents/skills/web-design-master`
+(+ `ui-ux-pro-max`, `design-system`, `ui-styling`).
